@@ -1,0 +1,12 @@
+{
+  "name": "lewiatan/spine",
+  "description": "Framework for WordPress theme developement",
+  "minimum-stability": "stable",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Maciej Niepieklo",
+      "email": "lewiatan.hpc@gmail.com"
+    }
+  ]
+}
