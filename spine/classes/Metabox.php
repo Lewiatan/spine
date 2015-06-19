@@ -1,43 +1,51 @@
 <?php  namespace Spine;
 
+use Spine\Form\Field;
+
 class Metabox {
-    /**
-     * @var array
-     */
-    private $arguments;
-    /**
-     * @var array
-     */
     private $fields;
+    private $slug;
+    private $name;
 
-    public function __construct(array $arguments, array $fields) {
-        $this->arguments = $arguments;
-        $this->fields = $fields;
+    private $context = 'post';
+    /**
+     * @var
+     */
+    private $field;
 
-        $this->registerMetabox();
+    /**
+     * @param Field $field
+     */
+    public function __construct(Field $field) {
+        $this->field = $field;
+
+        return $this;
     }
 
-    private function registerMetabox() {
-        add_meta_box(
-            $this->arguments['id'],
-            $this->arguments['title'],
-            [$this, 'display'],
-            $this->arguments['screen'],
-            arr_get($this->arguments, 'context', 'advanced'),
-            arr_get($this->arguments, 'priority', 'high')
-        );
+    /**
+     * @param $slug
+     * @param $name
+     * @return $this
+     */
+    public function make($slug, $name) {
+        $this->slug = $slug;
+        $this->name = $name;
+        $this->label = $name;
 
-        add_action('save_post', [$this, 'save']);
+        return $this;
     }
 
-    private function display() {
-        foreach ($this->fields as $field) {
-            $className = ucfirst($field);
-            echo new $className;
-        }
+    public function context($context) {
+        $this->context = $context;
+
+        return $this;
     }
 
-    private function save() {
+    public function addField($name, $type = 'text') {
+        $field = new $this->field($name, $type);
+        $this->fields[] = $field;
 
+        return $field;
     }
+
 }

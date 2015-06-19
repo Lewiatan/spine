@@ -1,41 +1,56 @@
 <?php namespace Spine;
 
 class Spine {
-    public static function init() {
+    private $vertebrae = [
+        'Asset' => 'Spine\Asset',
+        'Metabox' => 'Spine\Metabox',
+        'Field' => 'Spine\Form\Field',
+        'Input' => 'Spine\Form\Input',
+//        'Wordpress' => 'Spine\Adapters\Wordpress'
+    ];
 
+    private function __construct() {}
+
+    public static function assemble() {
+        return new static;
     }
 
-    public static function addCss($name, $location, array $dependencies = array(), $media = 'all', $version = '1.0') {
-        wp_enqueue_style( $name, $location, $dependencies, $version, $media );
+    public function __get($vertebra) {
+        return $this->resolve(ucfirst($vertebra));
     }
 
-    public static function removeCss($name) {
-        wp_dequeue_style($name);
+    public function attach($vertebra, $class) {
+        $this->vertebrae[$vertebra] = $class;
     }
 
-    public static function addJs($name, $location, array $dependencies = array(), $version = '1.0', $footer = true) {
-        wp_enqueue_script( $name, $location, $dependencies, $version, $footer );
+    private function resolve($vertebra) {
+        $dependencies = [];
+        $reflector = new \ReflectionClass($this->vertebrae[$vertebra]);
+        $constructor = $reflector->getConstructor();
+
+        if ($constructor) {
+            $dependencies = $constructor->getParameters();
+            $dependencies = static::makeDependencies($dependencies);
+        }
+
+        return $reflector->newInstanceArgs($dependencies);
     }
 
-    public static function removeJs($name) {
-        wp_dequeue_script($name);
+    private function makeDependencies(array $dependencies) {
+        $deps = [];
+
+        foreach ($dependencies as $dependency) {
+            $class = $dependency->getClass();
+            $className = $class->name;
+
+            if ($class->hasMethod('make') && $class->getMethod('make')->isStatic()) {
+                $deps[] = $className::make();
+            } else {
+                $deps[] = new $className;
+            }
+        }
+
+        return $deps;
     }
-
-    public static function addMetaBox() {
-
-    }
-
-    public static function removeMetaBox() {
-
-    }
-
-    public static function addPostType() {
-
-    }
-
-    public static function removePostType(){
-
-    }
-
 
 }

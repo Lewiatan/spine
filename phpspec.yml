@@ -1,0 +1,6 @@
+suites:
+  spine_suite:
+    namespace: Spine
+    spec_prefix:
+    src_path: spine/classes
+    spec_path: spec

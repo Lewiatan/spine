@@ -2,16 +2,25 @@
 
 // Some features to build
 
-Spine::init();
+use Spine\Spine;
 
-Spine::addPostType();
-Spine::removePostType();
+Spine::assemble();
 
-Spine::addCss();
-Spine::removeCss();
+//Spine::addPostType();
+//Spine::removePostType();
+//
+//Spine::addCss();
+//Spine::removeCss();
+//
+//Spine::addJs();
+//Spine::removeJs();
+//
+//Spine::addMetaBox();
+//Spine::removeMetaBox();
 
-Spine::addJs();
-Spine::removeJs();
 
-Spine::addMetaBox();
-Spine::removeMetaBox();
+
+//$spine->metabox->make();
+
+$metabox = (new Metabox('slug', 'name'))->contex('context');
+$metabox->addField('name', 'type')->withLabel('Label');
