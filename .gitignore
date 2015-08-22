@@ -1,4 +1,4 @@
-wp-example
-vendor
-spec
+wp-example/
+vendor/
 composer.lock
+node_modules/
