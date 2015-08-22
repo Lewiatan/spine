@@ -26,7 +26,7 @@ class Field {
      * @return $this
      */
     public function make($name, $type = 'text') {
-        return new $this($name, $type);
+        return new Field($name, $type);
     }
 
     /**

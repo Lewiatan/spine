@@ -14,6 +14,31 @@ class Wordpress {
     }
 
     public function removeJs($name) {
-        wp_dequeue_script($name);
+        return wp_dequeue_script($name);
+    }
+
+    public function addAction($name, $callback, $priority = 10, $accepted_args = 1) {
+        return add_action($name, $callback, $priority = 10, $accepted_args = 1);
+    }
+
+    public function addNonce($slug) {
+        $labels = $this->makeNonceLabel($slug);
+
+        return wp_nonce_field($labels['value'], $labels['name'], true, false);
+    }
+
+    public function verifyNonce($slug) {
+        $labels = $this->makeNonceLabel($slug);
+
+        return (isset($_POST[$labels['name']]) && wp_verify_nonce($_POST[$labels['name']], $labels[value]));
+    }
+
+    private function makeNonceLabel($slug) {
+        $part = 'spine_'.$slug;
+
+        return [
+            'name' => $part.'_nonce',
+            'value' => $part.'_nonce_meta',
+        ];
     }
 }

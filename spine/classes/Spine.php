@@ -1,12 +1,14 @@
 <?php namespace Spine;
 
+use Doctrine\Instantiator\Exception\InvalidArgumentException;
+use Mockery\CountValidator\Exception;
+
 class Spine {
     private $vertebrae = [
         'Asset' => 'Spine\Asset',
         'Metabox' => 'Spine\Metabox',
         'Field' => 'Spine\Form\Field',
         'Input' => 'Spine\Form\Input',
-//        'Wordpress' => 'Spine\Adapters\Wordpress'
     ];
 
     private function __construct() {}
@@ -16,11 +18,41 @@ class Spine {
     }
 
     public function __get($vertebra) {
+        if (! array_key_exists($vertebra, $this->vertebrae)) {
+            $vertebra = ucfirst($vertebra);
+        }
+
+        if (! array_key_exists($vertebra, $this->vertebrae)) {
+            throw new \Exception('Vertebra does not exist');
+        }
+
         return $this->resolve(ucfirst($vertebra));
     }
 
     public function attach($vertebra, $class) {
         $this->vertebrae[$vertebra] = $class;
+
+        return $this;
+    }
+
+    public function detach($toDetach) {
+        foreach ($this->vertebrae as $vertebra => $class) {
+            if ($vertebra === $toDetach) {
+                unset($this->vertebrae[$vertebra]);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getVertebrae() {
+        return $this->vertebrae;
+    }
+
+    public function reset() {
+        $this->vertebrae = [];
+
+        return $this;
     }
 
     private function resolve($vertebra) {

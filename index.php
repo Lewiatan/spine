@@ -12,7 +12,5 @@ $metabox->addField('country', 'select');
 $metabox2 = $spine->metabox->make('slug2', 'name2');
 //
 //
-$asset = $spine->asset;
-$input = $spine->input;
 
-var_dump($input, $asset);
+var_dump($metabox, $metabox2);
